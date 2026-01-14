@@ -1,10 +1,12 @@
-
 import torch
 import torch.nn as nn
-from model import SensitiveDataClassifier
 
-def train_classifier():
-    model = SensitiveDataClassifier()
-    criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-    return model
+class SensitiveDataClassifier(nn.Module):
+    def __init__(self, vocab_size=5000, embed_dim=128):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_dim)
+        self.fc = nn.Linear(embed_dim, 2)
+
+    def forward(self, x):
+        x = self.embedding(x).mean(dim=1)
+        return self.fc(x)
